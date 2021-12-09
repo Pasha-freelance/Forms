@@ -1,0 +1,18 @@
+.stepper {
+  .stepBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e6e6e6;
+  }
+
+  .stepBtn.active {
+    background: #c4d600;
+  }
+
+  .stepperLine {
+    width: 100px;
+    height: 5px;
+    background: #e6e6e6;
+  }
+}

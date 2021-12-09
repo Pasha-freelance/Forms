@@ -1,0 +1,56 @@
+[
+    {
+      "id": 744181732392,
+      "title": "PowerHub 4PD+ - UK / Black",
+      "handle": "powerhub-4",
+      "image": {
+        "src": "https://cdn.shopify.com/s/files/1/1772/1101/products/image5.jpg?v=1530099311"
+      },
+      "variantId": 3671983915048
+    },
+    {
+      "id": 744181732392,
+      "title": "PowerHub 4PD+ - EU / Black",
+      "handle": "powerhub-4",
+      "image": {
+        "src": "https://cdn.shopify.com/s/files/1/1772/1101/products/image5.jpg?v=1530099311"
+      },
+      "variantId": 8109464092784
+    },
+    {
+      "id": 123026603560,
+      "title": "PowerHub 6C+ - UK / Black",
+      "handle": "powerhub-6c",
+      "image": {
+        "src": "https://cdn.shopify.com/s/files/1/1772/1101/products/powerhub601.jpg?v=1523847426"
+      },
+      "variantId": 8108395692144
+    },
+    {
+      "id": 123026603560,
+      "title": "PowerHub 6C+ - EU / Black",
+      "handle": "powerhub-6c",
+      "image": {
+        "src": "https://cdn.shopify.com/s/files/1/1772/1101/products/powerhub601.jpg?v=1523847426"
+      },
+      "variantId": 8108396806256
+    },
+    {
+      "id": 1175361329235,
+      "title": "PowerHub PD100 - UK / Black",
+      "handle": "powerhub-pd100",
+      "image": {
+        "src": "https://cdn.shopify.com/s/files/1/1772/1101/products/EG-PowerHubPD100_8d64954d-2d24-416f-9841-65c2171e87c7.jpg?v=1596802157"
+      },
+      "variantId": 31880953692243
+    },
+    {
+      "id": 1180874840147,
+      "title": "PowerHub 4C - EU / White",
+      "handle": "powerhub-4c",
+      "image": {
+        "src": "https://cdn.shopify.com/s/files/1/1772/1101/products/PowerHub4C_Desktop_C_White.jpg?v=1591769421"
+      },
+      "variantId": 31907007266899
+    }
+  ]

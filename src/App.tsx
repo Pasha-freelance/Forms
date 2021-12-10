@@ -22,11 +22,12 @@ export interface IFormData {
   phoneModel: string;
   colorOfDevice: string;
   firstName: string;
-  secondName: string;
+  lastName: string;
   email: string;
   imei: string;
-  receipt: null | File;
-  picture: null | File;
+  receipt: any;
+  picture: any;
+  check: boolean;
 }
 
 export const Context = createContext<GlobalContext>({
@@ -41,13 +42,18 @@ function App() {
   const [step, setStep] = useState(1);
   const stepsComponents = [<FirstStep />, <SecondStep />, <ThirdStep />];
   const [globalData, setGlobalData] = useState({} as IFormData);
+  const [loading, setLoading] = useState(false);
 
   const uploadData = useCallback(() => {
     const url = `/submit-response.json`;
     console.log("Global data", globalData);
+    setLoading(true);
     fetch(url)
       .then((res) => res.json())
-      .then((res) => console.log("Final respone", res));
+      .then((res) => {
+        setLoading(false);
+        console.log("Final respone", res);
+      });
   }, [globalData]);
 
   return (
@@ -56,6 +62,11 @@ function App() {
         value={{ step, setStep, globalData, setGlobalData, uploadData }}>
         <Stepper />
         {stepsComponents[step - 1]}
+        {loading && (
+          <div className="loading row centered">
+            <h1>Loading...</h1>
+          </div>
+        )}
       </Context.Provider>
     </div>
   );

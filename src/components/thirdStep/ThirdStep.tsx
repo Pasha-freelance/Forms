@@ -1,20 +1,22 @@
 import React, { useState, useContext } from "react";
 
-import { Context } from "../../App";
+import { Context, IFormData } from "../../App";
+
+import { Formik, Form, Field, ErrorMessage } from "formik";
+
+import * as yup from "yup";
 
 import styles from "./thirdStep.module.scss";
 
-import { useValidator, IValidationResult } from "../../hooks/useValidator";
-import { Warning } from "../warning/Warning";
-
-interface IFormData {
-  purchaseDate: string;
-  phoneModel: string;
-  colorOfDevice: string;
-  imei: string;
-  receipt: null | File;
-  picture: null | File;
-}
+const schema = yup.object().shape({
+  purchaseDate: yup.date().required("Please select the date"),
+  phoneModel: yup.string().required("Please enter the phone model"),
+  colorOfDevice: yup.string().required("Please enter the color of device"),
+  imei: yup.string().required("Please enter the IMEI"),
+  receipt: yup.string().required("Upload the receipt"),
+  picture: yup.string().required("Upload the picture"),
+  check: yup.boolean().isTrue("Please submit"),
+});
 
 export const ThirdStep = () => {
   const [formData, setFormData] = useState({
@@ -22,134 +24,119 @@ export const ThirdStep = () => {
     phoneModel: "",
     colorOfDevice: "",
     imei: "",
-    receipt: null,
-    picture: null,
+    receipt: "",
+    picture: "",
+    check: false,
   } as IFormData);
 
   const { step, setStep, globalData, setGlobalData, uploadData } =
     useContext(Context);
-  const [validationResults, setValidationResults] = useState(
-    {} as IValidationResult
-  );
+
   const [submition, setSubmition] = useState(false);
-
-  const validator = useValidator();
-
   return (
-    <form className={`column centered`} onSubmit={(e) => e.preventDefault()}>
-      <h1>Enter purschase/device info</h1>
-      <input
-        type="date"
-        placeholder="purchaseDate"
-        value={formData.purchaseDate}
-        onChange={(e) =>
-          setFormData({ ...formData, purchaseDate: e.target.value })
-        }
-      />
-
-      {validationResults?.purchaseDate &&
-        validationResults.purchaseDate !== true && (
-          <Warning text={validationResults.purchaseDate} />
-        )}
-
-      <input
-        type="text"
-        placeholder="phoneModel"
-        value={formData.phoneModel}
-        onChange={(e) =>
-          setFormData({ ...formData, phoneModel: e.target.value })
-        }
-      />
-
-      {validationResults?.phoneModel &&
-        validationResults.phoneModel !== true && (
-          <Warning text={validationResults.phoneModel} />
-        )}
-
-      <input
-        type="text"
-        placeholder="colorOfDevice"
-        value={formData.colorOfDevice}
-        onChange={(e) =>
-          setFormData({ ...formData, colorOfDevice: e.target.value })
-        }
-      />
-
-      {validationResults?.colorOfDevice &&
-        validationResults.colorOfDevice !== true && (
-          <Warning text={validationResults.colorOfDevice} />
-        )}
-
-      <input
-        type="text"
-        placeholder="IMEI"
-        value={formData.imei}
-        onChange={(e) => setFormData({ ...formData, imei: e.target.value })}
-      />
-
-      {validationResults?.imei && validationResults.imei !== true && (
-        <Warning text={validationResults.imei} />
-      )}
-
-      <label className="input">
-        <input
-          type="file"
-          accept="image/png, image/jpeg"
-          onChange={(e) =>
-            e.target.files &&
-            setFormData({ ...formData, receipt: e.target.files[0] })
+    <Formik
+      enableReinitialize={true}
+      initialValues={formData}
+      validationSchema={schema}
+      validateOnChange={true}
+      onSubmit={(values: IFormData) => {
+        console.log(values);
+        setGlobalData({ ...globalData, values });
+        uploadData(globalData);
+      }}>
+      <Form className={`column centered`}>
+        <h1>Enter purschase/device info</h1>
+        <Field
+          name="purchaseDate"
+          type="date"
+          value={formData.purchaseDate}
+          onChange={(e: any) =>
+            setFormData({ ...formData, purchaseDate: e.target.value })
           }
         />
-        Receipt
-      </label>
+        <ErrorMessage name="purchaseDate" component="div" className="warn" />
 
-      {validationResults?.receipt && validationResults.receipt !== true && (
-        <Warning text={validationResults.receipt} />
-      )}
-
-      {formData.receipt && <span>File name: {formData.receipt.name}</span>}
-
-      <label className="input">
-        <input
-          type="file"
-          accept="image/png, image/jpeg"
-          onChange={(e) =>
-            e.target.files &&
-            setFormData({ ...formData, picture: e.target.files[0] })
+        <Field
+          name="phoneModel"
+          type="text"
+          placeholder="phoneModel"
+          value={formData.phoneModel}
+          onChange={(e: any) =>
+            setFormData({ ...formData, phoneModel: e.target.value })
           }
         />
-        Picture
-      </label>
+        <ErrorMessage name="phoneModel" component="div" className="warn" />
 
-      {validationResults?.picture && validationResults.picture !== true && (
-        <Warning text={validationResults.picture} />
-      )}
-
-      {formData.picture && <span>File name: {formData.picture.name}</span>}
-
-      <div className={`row ${styles.checkboxWrapper}`}>
-        <input
-          type="checkbox"
-          checked={submition}
-          onChange={() => setSubmition(!submition)}
-        />
-        <span className={`${styles.smallText}`}>
-          Please check this box, confirming all information is correct and that
-          you understand what is being required.
-        </span>
-      </div>
-
-      <button
-        onClick={() => {
-          const validation = validator(formData);
-          setValidationResults(validation.result);
-          if (validation.passed && submition) {
-            setGlobalData({ ...globalData, ...formData });
-            uploadData();
+        <Field
+          name="colorOfDevice"
+          type="text"
+          placeholder="colorOfDevice"
+          value={formData.colorOfDevice}
+          onChange={(e: any) =>
+            setFormData({ ...formData, colorOfDevice: e.target.value })
           }
-        }}>
-        Submit
-      </button>
-    </form>
+        />
+        <ErrorMessage name="colorOfDevice" component="div" className="warn" />
+
+        <Field
+          name="imei"
+          type="text"
+          placeholder="IMEI"
+          value={formData.imei}
+          onChange={(e: any) =>
+            setFormData({ ...formData, imei: e.target.value })
+          }
+        />
+        <ErrorMessage name="imei" component="div" className="warn" />
+
+        <label className="input">
+          <input
+            name="receipt"
+            type="file"
+            accept="image/png, image/jpeg"
+            onChange={(e: any) =>
+              e.target.files &&
+              setFormData({ ...formData, receipt: e.target.files[0] })
+            }
+          />
+          Receipt
+        </label>
+        <ErrorMessage name="receipt" component="div" className="warn" />
+        {formData.receipt && <span>File name: {formData.receipt.name}</span>}
+
+        <label className="input">
+          <input
+            name="picture"
+            type="file"
+            accept="image/png, image/jpeg"
+            onChange={(e: any) =>
+              e.target.files &&
+              setFormData({ ...formData, picture: e.target.files[0] })
+            }
+          />
+          Picture
+        </label>
+        <ErrorMessage name="picture" component="div" className="warn" />
+        {formData.picture && <span>File name: {formData.picture.name}</span>}
+
+        <div className={`row ${styles.checkboxWrapper}`}>
+          <input
+            name="check"
+            type="checkbox"
+            checked={formData.check}
+            onChange={() =>
+              setFormData({ ...formData, check: !formData.check })
+            }
+          />
+          <ErrorMessage name="check" component="div" className="warn" />
+          <span className={`${styles.smallText}`}>
+            Please check this box, confirming all information is correct and
+            that you understand what is being required.
+          </span>
+        </div>
+
+        <button type="submit">Submit</button>
+      </Form>
+    </Formik>
   );
 };

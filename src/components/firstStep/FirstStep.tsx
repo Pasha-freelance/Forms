@@ -1,64 +1,77 @@
 import React, { useState, useContext } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
-import { useValidator, IValidationResult } from "../../hooks/useValidator";
+import { IFormData } from "../../App";
+
+import * as yup from "yup";
+
 import { Context } from "../../App";
 import { useProducts, IProduct } from "../../hooks/useProducts";
 
-import { Warning } from "../warning/Warning";
+const schema = yup.object().shape({
+  pin: yup
+    .string()
+    .length(4, "Should have 4 characters")
+    .required("Please enter the pin"),
+  product: yup.string().required("Select product"),
+});
 
 export const FirstStep = () => {
   const { step, setStep, globalData, setGlobalData } = useContext(Context);
 
-  const [formData, setFormData] = useState({ pin: "", product: "" });
-
-  const [validationResults, setValidationResults] = useState(
-    {} as IValidationResult
-  );
+  const [formData, setFormData] = useState({
+    pin: "",
+    product: "",
+  } as IFormData);
 
   const products: any = useProducts();
 
-  const validator = useValidator();
-
   return (
-    <form className={`column centered`} onSubmit={(e) => e.preventDefault()}>
-      <h1>Enter your pin</h1>
-      <input
-        placeholder="enter PIN"
-        type="text"
-        value={formData.pin}
-        onChange={(e) => setFormData({ ...formData, pin: e.target.value })}
-      />
-      {validationResults?.pin && validationResults.pin !== true && (
-        <Warning text={validationResults.pin} />
-      )}
-      {products && (
-        <select
-          value={formData.product}
-          onChange={(e) =>
-            setFormData({ ...formData, product: e.target.value })
-          }>
-          <option disabled>Select model</option>
-          {products.map((product: IProduct) => (
-            <option key={product.title} value={product.title}>
-              {product.title}
-            </option>
-          ))}
-        </select>
-      )}
-      {validationResults?.product && validationResults.product !== true && (
-        <Warning text={validationResults.product} />
-      )}
-      <button
-        onClick={() => {
-          const validation = validator(formData);
-          setValidationResults(validation.result);
-          if (validation.passed) {
-            setGlobalData({ ...globalData, ...formData });
-            setStep(2);
+    <Formik
+      enableReinitialize={true}
+      initialValues={formData}
+      validationSchema={schema}
+      validateOnChange={true}
+      onSubmit={(values: IFormData) => {
+        console.log(values);
+        setGlobalData({ ...globalData, values });
+        setStep(2);
+      }}>
+      <Form className={`column centered`}>
+        <h1>Enter your pin</h1>
+        <Field
+          type="text"
+          name="pin"
+          placeholder="pin"
+          value={formData.pin}
+          onChange={(e: any) =>
+            setFormData({ ...formData, pin: e.target.value })
           }
-        }}>
-        Verify
-      </button>
-    </form>
+        />
+        <ErrorMessage name="pin" component="div" className="warn" />
+
+        {products && (
+          <Field
+            name="product"
+            as="select"
+            onChange={(e: any) =>
+              setFormData({ ...formData, product: e.target.value })
+            }
+            value={formData.product || "select product"}>
+            <option value="select product" disabled>
+              Select product
+            </option>
+            {products.map((product: IProduct) => (
+              <option key={product.title} value={product.title}>
+                {product.title}
+              </option>
+            ))}
+          </Field>
+        )}
+        <ErrorMessage name="product" component="div" className="warn" />
+
+        <button type="submit">Verify</button>
+      </Form>
+    </Formik>
   );
 };

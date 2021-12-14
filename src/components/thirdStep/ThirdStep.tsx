@@ -13,10 +13,24 @@ const schema = yup.object().shape({
 	phoneModel: yup.string().required("Please enter the phone model"),
 	colorOfDevice: yup.string().required("Please enter the color of device"),
 	imei: yup.string().required("Please enter the IMEI"),
-	receipt: yup.string().required("Upload the receipt"),
-	picture: yup.string().required("Upload the picture"),
-	check: yup.boolean().isTrue("Please submit"),
+	receipt: yup.object().required("Upload the receipt"),
+	picture: yup.object().required("Upload the picture"),
+	check: yup.boolean().isTrue("Please accept T&C"),
 });
+
+function getBase64(file: any) {
+	return new Promise((resolve) => {
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function() {
+			console.log(reader.result);
+			resolve(reader.result);
+		};
+		reader.onerror = function(error) {
+			console.log('Error: ', error);
+		};
+	});
+}
 
 export const ThirdStep = () => {
 	const [formData, setFormData] = useState({
@@ -29,7 +43,7 @@ export const ThirdStep = () => {
 		check: false,
 	} as IFormData);
 
-	const { globalData, setGlobalData, uploadData } =
+	const { globalData, setGlobalData, submitForm } =
 		useContext(Context);
 
 	return (
@@ -40,15 +54,25 @@ export const ThirdStep = () => {
 			validateOnChange={true}
 			onSubmit={(values: IFormData) => {
 				console.log(values);
-				setGlobalData({ ...globalData, values });
-				uploadData(globalData);
+				setGlobalData({ ...globalData, ...values });
+				submitForm(globalData);
 			}}>
 			<Form className={`column centered`}>
+				<h3 className={`${styles.introHeading}`}>
+					Please submit the below information<br />
+					failure to do may result in deniel of claim
+				</h3>
+
 				<h1>Enter purschase/device info</h1>
+
+				<p className="field-label">
+					Purchase date*
+				</p>
 				<Field
 					name="purchaseDate"
 					type="date"
 					value={formData.purchaseDate}
+					className="input"
 					onChange={(e: any) =>
 						setFormData({ ...formData, purchaseDate: e.target.value })
 					}
@@ -58,7 +82,7 @@ export const ThirdStep = () => {
 				<Field
 					name="phoneModel"
 					type="text"
-					placeholder="phoneModel"
+					placeholder="Phone model (example: iPhone 12 Pro)*"
 					value={formData.phoneModel}
 					onChange={(e: any) =>
 						setFormData({ ...formData, phoneModel: e.target.value })
@@ -69,7 +93,7 @@ export const ThirdStep = () => {
 				<Field
 					name="colorOfDevice"
 					type="text"
-					placeholder="colorOfDevice"
+					placeholder="Color of device*"
 					value={formData.colorOfDevice}
 					onChange={(e: any) =>
 						setFormData({ ...formData, colorOfDevice: e.target.value })
@@ -80,7 +104,7 @@ export const ThirdStep = () => {
 				<Field
 					name="imei"
 					type="text"
-					placeholder="IMEI"
+					placeholder="Enter your IMEI*"
 					value={formData.imei}
 					onChange={(e: any) =>
 						setFormData({ ...formData, imei: e.target.value })
@@ -93,30 +117,53 @@ export const ThirdStep = () => {
 						name="receipt"
 						type="file"
 						accept="image/png, image/jpeg"
-						onChange={(e: any) =>
-							e.target.files &&
-							setFormData({ ...formData, receipt: e.target.files[0] })
-						}
+						onChange={async (e: any) => {
+							if (!e.target.files) {
+								return;
+							}
+
+							// Upload the file
+							const base64 = await getBase64(e.target.files[0]);
+							setFormData({
+								...formData,
+								receipt: {
+									file: e.target.files[0],
+									base64,
+								},
+							});
+						}}
 					/>
-					Receipt
+					Click to upload purchase receipt*
 				</label>
 				<ErrorMessage name="receipt" component="div" className="warn" />
-				{formData.receipt && <span>File name: {formData.receipt.name}</span>}
+				{formData.receipt && <img src={formData.receipt.base64} alt="" width="100" />}
 
 				<label className="input">
 					<input
 						name="picture"
 						type="file"
 						accept="image/png, image/jpeg"
-						onChange={(e: any) =>
-							e.target.files &&
-							setFormData({ ...formData, picture: e.target.files[0] })
-						}
+						placeholder="Click to upload picture of device"
+						onChange={async (e: any) => {
+							if (!e.target.files) {
+								return;
+							}
+
+							// Upload the file
+							const base64 = await getBase64(e.target.files[0]);
+							setFormData({
+								...formData,
+								picture: {
+									file: e.target.files[0],
+									base64,
+								},
+							});
+						}}
 					/>
-					Picture
+					Click to upload picture of device*
 				</label>
 				<ErrorMessage name="picture" component="div" className="warn" />
-				{formData.picture && <span>File name: {formData.picture.name}</span>}
+				{formData.picture && <img src={formData.picture.base64} alt="" width="100" />}
 
 				<div className={`row ${styles.checkboxWrapper}`}>
 					<input
@@ -127,15 +174,15 @@ export const ThirdStep = () => {
 							setFormData({ ...formData, check: !formData.check })
 						}
 					/>
-					<ErrorMessage name="check" component="div" className="warn" />
 					<span className={`${styles.smallText}`}>
 						Please check this box, confirming all information is correct and
 						that you understand what is being required.
 					</span>
 				</div>
+				<ErrorMessage name="check" component="div" className="warn" />
 
 				<button type="submit">Submit</button>
 			</Form>
-		</Formik>
+		</Formik >
 	);
 };

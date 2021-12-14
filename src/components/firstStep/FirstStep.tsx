@@ -11,7 +11,7 @@ import { useProducts, IProduct } from "../../hooks/useProducts";
 const schema = yup.object().shape({
 	pin: yup
 		.string()
-		.length(4, "Should have 4 characters")
+		.min(4, "Should have at least 4 characters")
 		.required("Please enter the pin"),
 	product: yup.string().required("Select product"),
 });
@@ -34,7 +34,7 @@ export const FirstStep = () => {
 			validateOnChange={true}
 			onSubmit={(values: IFormData) => {
 				console.log(values);
-				setGlobalData({ ...globalData, values });
+				setGlobalData({ ...globalData, ...values });
 				setStep(2);
 			}}>
 			<Form className={`column centered`}>
@@ -42,7 +42,7 @@ export const FirstStep = () => {
 				<Field
 					type="text"
 					name="pin"
-					placeholder="pin"
+					placeholder="enter PIN*"
 					value={formData.pin}
 					onChange={(e: any) =>
 						setFormData({ ...formData, pin: e.target.value })
@@ -59,7 +59,7 @@ export const FirstStep = () => {
 						}
 						value={formData.product || "select product"}>
 						<option value="select product" disabled>
-							Select product
+							Select your product*
 						</option>
 						{products.map((product: IProduct) => (
 							<option key={product.title} value={product.title}>

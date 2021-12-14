@@ -7,15 +7,17 @@ import * as yup from "yup";
 
 import { Context } from "../../App";
 
+import renderExistingData from 'components/renderData';
+
 const schema = yup.object().shape({
 	firstName: yup
 		.string()
 		.min(2, "Should have at least 2 characters")
-		.required("Please enter the firstName"),
+		.required("Please enter the First name"),
 	lastName: yup
 		.string()
 		.min(2, "Should have at least 2 characters")
-		.required("Please enter the lastName"),
+		.required("Please enter the Last name"),
 	email: yup.string().email("Invalid email adress").required("Field is empty"),
 });
 
@@ -29,6 +31,9 @@ export const SecondStep = () => {
 		email: "",
 	} as IFormData);
 
+	console.log('the global data after spread', {
+		...globalData,
+	});
 	return (
 		<Formik
 			enableReinitialize={true}
@@ -37,16 +42,17 @@ export const SecondStep = () => {
 			validateOnChange={true}
 			onSubmit={(values: IFormData) => {
 				console.log(values);
-				setGlobalData({ ...globalData, values });
+				setGlobalData({ ...globalData, ...values });
 				uploadData(globalData);
 				setStep(3);
 			}}>
 			<Form className={`column centered`}>
+				{globalData && renderExistingData(['pin', 'product'], globalData)}
 				<h1>Enter customer info</h1>
 				<Field
 					type="text"
 					name="firstName"
-					placeholder="firstName"
+					placeholder="First name*"
 					value={formData.firstName}
 					onChange={(e: any) =>
 						setFormData({ ...formData, firstName: e.target.value })
@@ -57,7 +63,7 @@ export const SecondStep = () => {
 				<Field
 					type="text"
 					name="lastName"
-					placeholder="lastName"
+					placeholder="Last name*"
 					value={formData.lastName}
 					onChange={(e: any) =>
 						setFormData({ ...formData, lastName: e.target.value })
@@ -68,7 +74,7 @@ export const SecondStep = () => {
 				<Field
 					type="email"
 					name="email"
-					placeholder="email"
+					placeholder="email*"
 					value={formData.email}
 					onChange={(e: any) =>
 						setFormData({ ...formData, email: e.target.value })

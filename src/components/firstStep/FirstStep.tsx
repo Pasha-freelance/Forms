@@ -37,17 +37,21 @@ export const FirstStep = () => {
 				setGlobalData({ ...globalData, ...values });
 				setStep(2);
 			}}>
-			<Form className={`column centered`}>
+			<Form className={`column centered`} style={{position: 'relative'}}>
 				<h1>Enter your pin</h1>
-				<Field
-					type="text"
-					name="pin"
-					placeholder="enter PIN*"
-					value={formData.pin}
-					onChange={(e: any) =>
-						setFormData({ ...formData, pin: e.target.value })
-					}
-				/>
+					<Field
+						type="text"
+						name="pin"
+						value={formData.pin}
+						onChange={(e: any) =>
+							setFormData({ ...formData, pin: e.target.value })
+						}
+					/>
+					{!formData.pin && (
+						<span className="placeholder">
+						enter PIN <span  className="asterisks">*</span>{" "}
+						 </span>
+					)}
 				<ErrorMessage name="pin" component="div" className="warn" />
 
 				{products && (

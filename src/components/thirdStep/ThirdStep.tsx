@@ -65,8 +65,8 @@ export const ThirdStep = () => {
 
 				<h1>Enter purschase/device info</h1>
 
-				<p className="field-label">
-					Purchase date*
+				<p className="field-label placeholder">
+					Purchase date<span className="asterisks">*</span>
 				</p>
 				<Field
 					name="purchaseDate"
@@ -82,34 +82,46 @@ export const ThirdStep = () => {
 				<Field
 					name="phoneModel"
 					type="text"
-					placeholder="Phone model (example: iPhone 12 Pro)*"
 					value={formData.phoneModel}
 					onChange={(e: any) =>
 						setFormData({ ...formData, phoneModel: e.target.value })
 					}
 				/>
+				{!formData.phoneModel && (
+					<span className="placeholder">
+            		Phone model (example: iPhone 12 Pro) <span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="phoneModel" component="div" className="warn" />
 
 				<Field
 					name="colorOfDevice"
 					type="text"
-					placeholder="Color of device*"
 					value={formData.colorOfDevice}
 					onChange={(e: any) =>
 						setFormData({ ...formData, colorOfDevice: e.target.value })
 					}
 				/>
+				{!formData.colorOfDevice && (
+					<span className="placeholder">
+            		Color of device <span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="colorOfDevice" component="div" className="warn" />
 
 				<Field
 					name="imei"
 					type="text"
-					placeholder="Enter your IMEI*"
 					value={formData.imei}
 					onChange={(e: any) =>
 						setFormData({ ...formData, imei: e.target.value })
 					}
 				/>
+				{!formData.imei && (
+					<span className="placeholder">
+            		Enter your IMEI <span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="imei" component="div" className="warn" />
 
 				<label className="input">
@@ -133,8 +145,12 @@ export const ThirdStep = () => {
 							});
 						}}
 					/>
-					Click to upload purchase receipt*
 				</label>
+				{!formData.receipt && (
+					<span className="placeholder">
+            		Click to upload purchase receipt <span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="receipt" component="div" className="warn" />
 				{formData.receipt && <img src={formData.receipt.base64} alt="" width="100" />}
 
@@ -143,7 +159,6 @@ export const ThirdStep = () => {
 						name="picture"
 						type="file"
 						accept="image/png, image/jpeg"
-						placeholder="Click to upload picture of device"
 						onChange={async (e: any) => {
 							if (!e.target.files) {
 								return;
@@ -160,8 +175,12 @@ export const ThirdStep = () => {
 							});
 						}}
 					/>
-					Click to upload picture of device*
 				</label>
+				{!formData.picture && (
+					<span className="placeholder">
+            		Click to upload picture of device <span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="picture" component="div" className="warn" />
 				{formData.picture && <img src={formData.picture.base64} alt="" width="100" />}
 

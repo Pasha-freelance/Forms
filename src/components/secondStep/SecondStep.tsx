@@ -52,34 +52,46 @@ export const SecondStep = () => {
 				<Field
 					type="text"
 					name="firstName"
-					placeholder="First name*"
 					value={formData.firstName}
 					onChange={(e: any) =>
 						setFormData({ ...formData, firstName: e.target.value })
 					}
 				/>
+				{!formData.firstName && (
+					<span className="placeholder">
+            		First name* <span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="firstName" component="div" className="warn" />
 
 				<Field
 					type="text"
 					name="lastName"
-					placeholder="Last name*"
 					value={formData.lastName}
 					onChange={(e: any) =>
 						setFormData({ ...formData, lastName: e.target.value })
 					}
 				/>
+				{!formData.lastName && (
+				<span className="placeholder">
+            		Last name<span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="lastName" component="div" className="warn" />
 
 				<Field
 					type="email"
 					name="email"
-					placeholder="email*"
 					value={formData.email}
 					onChange={(e: any) =>
 						setFormData({ ...formData, email: e.target.value })
 					}
 				/>
+				{!formData.email && (
+					<span className="placeholder">
+            		email<span className="asterisks">*</span>{" "}
+         			 </span>
+				)}
 				<ErrorMessage name="email" component="div" className="warn" />
 
 				<button type="submit">Submit</button>

@@ -1,3 +1,13 @@
 .successWrapper {
 	text-align: center;
 }
+.placeholder {
+	transform: translateY(-140%);
+	margin-bottom: -25px;
+}
+.placeholder .asterisks {
+	color: red;
+}
+.form {
+	position: relative !important;
+}
